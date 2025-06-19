@@ -7,6 +7,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 # define TOKEN_WORD 1
 # define TOKEN_PIPE 2
@@ -21,6 +23,14 @@ typedef struct s_token
 	int				type;
 	struct s_token	*next;
 }					t_token;
+
+typedef struct s_simple_cmd
+{
+	char	**args;//execve için argümanlar("ls", "-l", NULL)
+	//yönlendirmeler için bir liste eklenecek unutma.!!!!!
+	t_list	*redireciton;
+}			t_simple_cmd;
+
 
 t_token				*lexer(char *line);
 
