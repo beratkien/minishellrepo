@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/06/25 22:05:03 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:15:08 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,9 @@ void execute_pipeline(t_command *pipeline, char **envp)
 		//childin bitmesini bekle
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			g?g_last_exit_status = WEXITSTATUS(status);
+		g_last_exit_status = WEXITSTATUS(status);
 		else
-		g_last_exit_status = 128 + WTERMSIG(status);
+			g_last_exit_status = 128 + WTERMSIG(status);
 	}
 
 }
