@@ -2,13 +2,13 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <stdio.h>
 # include <stdlib.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/wait.h>
+# include <unistd.h>
+# include <signal.h>
+# include <sys/wait.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
 # define TOKEN_WORD 1
 # define TOKEN_PIPE 2
@@ -24,20 +24,35 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
-typedef struct s_simple_cmd
+typedef enum e_redir_type
 {
-	char	**args;//execve için argümanlar("ls", "-l", NULL)
-	//yönlendirmeler için bir liste eklenecek unutma.!!!!!
-	t_list	*redireciton;
-}			t_simple_cmd;
+	REDIR_IN,		// <
+	REDIR_OUT,		// >
+	REDIR_APPEND,	// >>
+	REDIR_HEREDOC	// <<
+}	t_redir_type;
 
+typedef struct s_redirect
+{
+	char				**filename;
+	t_redir_type		type;
+	struct s_redirect	*next;
+}	t_redirect;
 
+typedef struct s_command
+{
+	char				**args;
+	t_redirect			*redirects;
+	struct s_command	*next;
+}	t_command;
+
+extern int g_last_exit_status;
 t_token				*lexer(char *line);
-
 int					is_whitespace(char c);
 int					is_metachar(char c);
 t_token				*create_token(char *value, int type);
 void				add_token(t_token **head, t_token *new_token);
 void				free_tokens(t_token *head);
+char			*get_command_path(char *cmd, char **envp);
 
 #endif
