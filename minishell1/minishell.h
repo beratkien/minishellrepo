@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
+/*   Updated: 2025/06/27 01:58:18 by mdonmeze         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -45,6 +57,12 @@ typedef struct s_command
 	t_redirect			*redirects;
 	struct s_command	*next;
 }	t_command;
+//yeni shellin genel durumunu tutan ana yapı!!!!.
+typedef struct s_shell
+{
+	char	**envp;
+	int		last_exit_code;
+}	t_shell;
 
 extern int g_last_exit_status;
 t_token				*lexer(char *line);

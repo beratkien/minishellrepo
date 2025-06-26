@@ -3,27 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/06/19 01:27:43 by beergin          ###   ########.fr       */
+/*   Updated: 2025/06/27 02:11:50 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile sig_atomic_t g_signal_status = 0;
+volatile sig_atomic_t	g_signal_status = 0;
 
-void handle_signal(int signo)
+void	handle_signal(int signo)
 {
-	if(signo == SIGINT)
+	if (signo == SIGINT)
 	{
 		g_signal_status = 1;
+		printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 	}
-	else if(signo == SIGQUIT)
-	{
+	else if (signo == SIGQUIT)
 		g_signal_status = 2;
-	}
 }
 
 t_token	*lexer(char *line)
@@ -109,68 +111,72 @@ t_token	*lexer(char *line)
 				{
 					add_token(&tokens, create_token(ft_substr(line, start, i
 								- start), TOKEN_WORD));
-					i++;
-				}
-				else
-				{
-					printf("minishell: unclosed quote\n");
-					free_tokens(tokens);
-					return (NULL);
+							i++;
+						}
+						else
+						{
+							printf("minishell: unclosed quote\n");
+							free_tokens(tokens);
+							return (NULL);
+						}
+					}
+					else
+					{
+						while (line[i] && !is_whitespace(line[i])
+							&& !is_metachar(line[i]) && line[i] != '\''
+							&& line[i] != '"')
+							i++;
+						add_token(&tokens, create_token(ft_substr(line, start, i
+									- start), TOKEN_WORD));
+					}
 				}
 			}
-			else
-			{
-				while (line[i] && !is_whitespace(line[i])
-					&& !is_metachar(line[i]) && line[i] != '\''
-					&& line[i] != '"')
-					i++;
-				add_token(&tokens, create_token(ft_substr(line, start, i
-							- start), TOKEN_WORD));
-			}
+			return (tokens);
 		}
-	}
-	return (tokens);
-}
 
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
-	char *line;
-	t_token *tokens;
-	t_token *current_token; //test için
+	char		*line;
+	t_token		*tokens;
+	t_command	*commands;
+	t_shell		shell;
 
+	(void)ac;
+	(void)av;
+	shell.envp = envp;
+	shell.last_exit_code = 0;
 	signal(SIGINT, handle_signal);
-
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
-		line = readline("$> ");
+		line = readline("minishell $> ");
 		if (line == NULL)
 		{
 			printf("exit\n");
-			break;
+			break ;
 		}
 		if (line[0] != '\0')
 		{
 			add_history(line);
 			tokens = lexer(line);
-			if(tokens == NULL)
+			if (tokens)
 			{
-				free(line);
-				continue;
+				commands = malloc(sizeof(t_command));
+				commands->args = ft_split(line, ' ');
+				commands->redirects = NULL;
+				commands->next = NULL;
+				if (commands)
+				{
+					int i = 0;
+					while(commands->args[i])
+						free(commands->args[i++]);
+					free(commands->args);
+					free(commands);
+				}
+				free_tokens(tokens);
 			}
-
-			//test kısmı//
-			printf("------TEST------\n");
-			current_token = tokens;
-			while(current_token)
-			{
-				printf("Value : %s , Type : %d\n", current_token->value, current_token->type);
-				current_token = current_token->next;
-			}
-			printf("------SON-------\n");
 		}
-		else
-			printf("Empty command.\n");
 		free(line);
 	}
-	return (0);
+	return (shell.last_exit_code);
 }

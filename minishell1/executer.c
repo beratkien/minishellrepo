@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/06/25 22:15:08 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/06/27 02:02:12 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void free_path(char **path)
 	free(path);
 }
 //path içerisinde geziyor ve konumları bölüyor.
-static char	*get_command_path(char *cmd, char **envp)
+char	*get_command_path(char *cmd, char **envp)
 {
 	char	**path;
 	char	*path_part;
@@ -103,10 +103,12 @@ void execute_pipeline(t_command *pipeline, char **envp)
 	{
 		perror("fork");
 		return ;
+
 	}
 	if (pid == 0)
 	{
-		// child süreç
+		// child süreçexecve("/bin/ls", )
+
 		execute_simple_command(pipeline, envp);
 	}
 	else
