@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/06/27 01:58:18 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/06/27 02:32:21 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int					is_metachar(char c);
 t_token				*create_token(char *value, int type);
 void				add_token(t_token **head, t_token *new_token);
 void				free_tokens(t_token *head);
-char			*get_command_path(char *cmd, char **envp);
+char				*get_command_path(char *cmd, char **envp);
+void				execute_pipeline(t_command *pipeline, char **envp);
+
 
 #endif

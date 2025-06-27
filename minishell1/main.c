@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/06/27 02:11:50 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/06/27 02:35:39 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ t_token	*lexer(char *line)
 			return (tokens);
 		}
 
+// --- ANA DEĞİŞİKLİK BURADA ---
 int	main(int ac, char **av, char **envp)
 {
 	char		*line;
@@ -161,12 +162,17 @@ int	main(int ac, char **av, char **envp)
 			tokens = lexer(line);
 			if (tokens)
 			{
+				// Parser henüz hazır olmadığı için, lexer'dan gelen
+				// token'ları doğrudan komut olarak kullanıyoruz.
+				// Bu, 'ls -l' gibi basit komutlar için çalışır.
 				commands = malloc(sizeof(t_command));
 				commands->args = ft_split(line, ' ');
 				commands->redirects = NULL;
 				commands->next = NULL;
 				if (commands)
 				{
+					execute_pipeline(commands, shell.envp);
+					// Bellek temizliği (daha sonra robust hale getirilecek)
 					int i = 0;
 					while(commands->args[i])
 						free(commands->args[i++]);
