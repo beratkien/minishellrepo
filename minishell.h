@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/06/27 02:32:21 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/06/27 03:34:58 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <fcntl.h>
 
 # define TOKEN_WORD 1
 # define TOKEN_PIPE 2
@@ -46,7 +47,7 @@ typedef enum e_redir_type
 
 typedef struct s_redirect
 {
-	char				**filename;
+	char				*filename;
 	t_redir_type		type;
 	struct s_redirect	*next;
 }	t_redirect;
@@ -72,7 +73,14 @@ t_token				*create_token(char *value, int type);
 void				add_token(t_token **head, t_token *new_token);
 void				free_tokens(t_token *head);
 char				*get_command_path(char *cmd, char **envp);
-void				execute_pipeline(t_command *pipeline, char **envp);
-
+void				execute_pipeline(t_command *pipeline, t_shell *shell);
+t_redirect				*create_redirection(int type, char **file);
+void					add_redirection(t_redirect **head,
+							t_redirect *new_redirection);
+void					free_redirections(t_redirect *head);
+void					free_commands(t_command *head);
+int						count_args(t_token *tokens);
+char	*get_command_path(char *cmd, char **envp);
+t_command	*parser(t_token *tokens);
 
 #endif
