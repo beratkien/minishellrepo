@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 READLINE_FLAGS = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
 
-SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c
+SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c utils.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 02:03:45 by beergin           #+#    #+#             */
-/*   Updated: 2025/06/27 02:53:56 by beergin          ###   ########.fr       */
+/*   Updated: 2025/07/01 14:16:25 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,5 +114,6 @@ t_command	*parser(t_token *tokens)
             }
         }
 	}
+	(void)tmp_iter;
     return (cmd_head);
 }
