@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/06/27 03:34:24 by beergin          ###   ########.fr       */
+/*   Updated: 2025/07/02 21:15:13 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_token	*lexer(char *line)
 			break ;
 		if (line[i] == '|')
 		{
-			add_token(&tokens, create_token(ft_strdup("|"), TOKEN_PIPE));
+			add_token(&tokens, create_token(ftt_strdup("|"), TOKEN_PIPE));
 			i++;
 		}
 		else if (line[i] == '<')

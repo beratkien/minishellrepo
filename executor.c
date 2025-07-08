@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/06/30 02:39:58 by md               ###   ########.fr       */
+/*   Updated: 2025/07/02 21:13:41 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,11 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 		{
 			waitpid(pid, &status, 0);
 			if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
+				g_last_exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+			{
+				
+			}
 		}
 	}
 }

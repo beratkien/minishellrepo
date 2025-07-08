@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:49:19 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/01 17:53:16 by md               ###   ########.fr       */
+/*   Updated: 2025/07/02 21:38:34 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static 	int builtin_pwd(void)
+int builtin_pwd(void)
 {
 	char cwd[1024];
 
@@ -26,6 +26,7 @@ static 	int builtin_pwd(void)
 		perror("minishell: pwd");
 		return (1);
 	}
+	ft_memset(cwd, 0, sizeof(cwd));
 }
 int is_builtin(char *cmd)
 {
