@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/07/09 09:38:57 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 10:55:38 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 		shell->last_exit_code = execute_builtin(pipeline, shell);
 		return ;
 	}
-	if (!pipeline || !pipeline->args || ! !pipeline->args[0])
+	if (!pipeline || !pipeline->args || !pipeline->args[0])
 		return ;
 
 	in_fd = STDIN_FILENO;

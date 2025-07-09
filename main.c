@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/09 08:20:29 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 10:56:07 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,21 +134,22 @@ t_token	*lexer(char *line)
 
 int	main(int ac, char **av, char **envp)
 {
-	char *line;
-	t_token *tokens;
-	t_command *comm;
-	t_shell shell;
+	char		*line;
+	t_token		*tokens;
+	t_shell		shell;
 
 	(void)ac;
 	(void)av;
 	shell.envp = envp;
 	shell.last_exit_code = 0;
+
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
+
 	while (1)
 	{
 		line = readline("$> ");
-		if (line == NULL || line == ft_strdup("exit"))
+		if (line == NULL)
 		{
 			printf("exit\n");
 			break ;
@@ -157,24 +158,18 @@ int	main(int ac, char **av, char **envp)
 		{
 			add_history(line);
 			tokens = lexer(line);
-			if (tokens == NULL)
+			if (tokens)
 			{
-				free(line);
-				continue ;
-			}
-			comm = parser(tokens);
-			if (!comm)
-			{
+				t_command *commands = parser(tokens);
+
+				if (commands)
+				{
+					execute_pipeline(commands, &shell);
+					free_commands(commands);
+				}
 				free_tokens(tokens);
-				free(line);
-				continue ;
 			}
-			execute_pipeline(comm, &shell);
-			free(tokens);
-			free_commands(comm);
 		}
-		else
-			printf("Empty command.\n");
 		free(line);
 	}
 	return (shell.last_exit_code);
