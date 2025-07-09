@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/07/09 10:55:38 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 11:49:46 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int
 		dup2(out_fd, STDOUT_FILENO);
 		close(out_fd);
 	}
+	if (handle_redirections(cmd) == -1)
+		exit(EXIT_FAILURE);
 	if (is_builtin(cmd->args[0]))
 		exit(execute_builtin(cmd, shell));
 	path = get_command_path(cmd->args[0], shell);
