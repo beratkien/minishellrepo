@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/09 11:53:35 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:37:21 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ char			*get_command_path(char *cmd, t_shell *shell);
 t_command	*parser(t_token *tokens);
 int builtin_pwd(void);
 int is_builtin(char *cmd);
+int	builtin_env(t_shell *shell);
+int builtin_cd(t_command *cmd, t_shell *shell);
 int execute_builtin(t_command *cmd, t_shell *shell);
 int					handle_redirections(t_command *cmd);
 

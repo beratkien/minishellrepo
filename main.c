@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/09 10:56:07 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:51:39 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,45 +132,100 @@ t_token	*lexer(char *line)
 	return (tokens);
 }
 
+static char **copy_envp(char **envp)
+{
+    char **new_envp;
+    int count = 0;
+    int i;
+
+    // Önce kaç tane var sayalım
+    while (envp[count])
+        count++;
+
+    new_envp = malloc(sizeof(char *) * (count + 1));
+    if (!new_envp)
+        return (NULL);
+
+    i = 0;
+    while (i < count)
+    {
+        new_envp[i] = ft_strdup(envp[i]);
+        if (!new_envp[i])
+        {
+            // Hata durumunda önceki kopyaları free et
+            while (--i >= 0)
+                free(new_envp[i]);
+            free(new_envp);
+            return (NULL);
+        }
+        i++;
+    }
+    new_envp[count] = NULL;
+    return (new_envp);
+}
+
+static void free_envp(char **envp)
+{
+    int i = 0;
+
+    if (!envp)
+        return;
+
+    while (envp[i])
+    {
+        free(envp[i]);
+        i++;
+    }
+    free(envp);
+}
+
 int	main(int ac, char **av, char **envp)
 {
-	char		*line;
-	t_token		*tokens;
-	t_shell		shell;
+    char		*line;
+    t_token		*tokens;
+    t_shell		shell;
 
-	(void)ac;
-	(void)av;
-	shell.envp = envp;
-	shell.last_exit_code = 0;
+    (void)ac;
+    (void)av;
 
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, SIG_IGN);
+    shell.envp = copy_envp(envp);  // Kopyasını oluştur
+    if (!shell.envp)
+    {
+        ft_putstr_fd("Failed to copy environment\n", 2);
+        return (1);
+    }
+    shell.last_exit_code = 0;
 
-	while (1)
-	{
-		line = readline("$> ");
-		if (line == NULL)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (line[0] != '\0')
-		{
-			add_history(line);
-			tokens = lexer(line);
-			if (tokens)
-			{
-				t_command *commands = parser(tokens);
+    signal(SIGINT, handle_signal);
+    signal(SIGQUIT, SIG_IGN);
 
-				if (commands)
-				{
-					execute_pipeline(commands, &shell);
-					free_commands(commands);
-				}
-				free_tokens(tokens);
-			}
-		}
-		free(line);
-	}
-	return (shell.last_exit_code);
+    while (1)
+    {
+        line = readline("$> ");
+        if (line == NULL)
+        {
+            printf("exit\n");
+            break ;
+        }
+        if (line[0] != '\0')
+        {
+            add_history(line);
+            tokens = lexer(line);
+            if (tokens)
+            {
+                t_command *commands = parser(tokens);
+
+                if (commands)
+                {
+                    execute_pipeline(commands, &shell);
+                    free_commands(commands);
+                }
+                free_tokens(tokens);
+            }
+        }
+        free(line);
+    }
+
+    free_envp(shell.envp);  // Program sonunda free et
+    return (shell.last_exit_code);
 }

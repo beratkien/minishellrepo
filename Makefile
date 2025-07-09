@@ -3,7 +3,8 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g -I/usr/local/opt/readline/include
 LDFLAGS = -lreadline -L/usr/local/opt/readline/lib
 
-SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c builtins/pwd.c redirections.c
+SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c builtins/pwd.c \
+		redirections.c builtins/built.c builtins/cd.c builtins/env.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -29,5 +30,13 @@ fclean: clean
 	@make -C $(LIBFT_DIR) fclean
 re: fclean all
 
+leaks:
+	@valgrind	--leak-check=full \
+				--suppressions=readline.supp \
+				--show-leak-kinds=all \
+				--track-origins=yes \
+				--track-fds=yes \
+				--verbose \
+				./$(NAME)
 
 .PHONY: all clean fclean re
