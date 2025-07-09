@@ -6,11 +6,11 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:49:19 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/02 21:38:34 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 10:22:33 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int builtin_pwd(void)
 {
@@ -34,14 +34,16 @@ int is_builtin(char *cmd)
 		return (0);
 	if (ft_strncmp(cmd, "pwd", 4) == 0)
 		return (1);
+	return (0);
 }
 
 int execute_builtin(t_command *cmd, t_shell *shell)
 {
+	(void)shell;
 	char *command_name;
 
 	command_name = cmd->args[0];
-	if (ft_strncmp(cmd, "pwd", 4) == 0)
+	if (ft_strncmp(command_name, "pwd", 4) == 0)
 		return (builtin_pwd());
 	return (0);
 }

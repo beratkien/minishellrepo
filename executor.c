@@ -6,11 +6,12 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/07/02 21:13:41 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/09 09:38:57 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 int g_last_exit_status = 0;
 static void free_path(char **path)
 {
@@ -26,8 +27,8 @@ static void free_path(char **path)
 	}
 	free(path);
 }
-//path içerisinde geziyor ve konumları bölüyor.
-char	*get_command_path(char *cmd, char *shell)
+
+char	*get_command_path(char *cmd, t_shell *shell)
 {
 	char	**path;
 	char	*path_part;
@@ -43,9 +44,11 @@ char	*get_command_path(char *cmd, char *shell)
 		return (NULL);
 	}
 	i = 0;
-	while (shell[i] && ft_strncmp(shell[i], "PATH=", 5) != 0)
+	while (shell->envp && shell->envp[i] && ft_strncmp(shell->envp[i], "PATH=", 5) != 0)
 		i++;
-	path = ft_split(shell[i] + 5, ':');
+	if (!shell->envp || !shell->envp[i])
+		return (NULL);
+	path = ft_split(shell->envp[i] + 5, ':');
 	if (!path)
 		return (NULL);
 	i = 0;
@@ -65,56 +68,86 @@ char	*get_command_path(char *cmd, char *shell)
 	free_path(path);
 	return (NULL);
 }
-/*gelen argüman komut mu diye bakıyor eğer komutsa pathe bakıp çalıştırılabilir
-olup olmadığına bakıyor.*/
-static void execute_simple_command(t_command *cmd, char *shell)
+
+static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int out_fd)
 {
 	char	*path;
 
-	if (!cmd || !cmd->args || !cmd->args[0])
-		exit(EXIT_FAILURE);
-
+	if (in_fd != STDIN_FILENO)
+	{
+		dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+	}
+	if (out_fd != STDOUT_FILENO)
+	{
+		dup2(out_fd, STDOUT_FILENO);
+		close(out_fd);
+	}
+	if (is_builtin(cmd->args[0]))
+		exit(execute_builtin(cmd, shell));
 	path = get_command_path(cmd->args[0], shell);
 	if (!path)
 	{
-		ft_putstr_fd("minishell: command not found: ", 2);
+		ft_putstr_fd("minishell command not found: ", 2);
 		ft_putendl_fd(cmd->args[0], 2);
 		exit(127);
 	}
+	execve(path, cmd->args, shell->envp);
+	perror("minishell: execve");
+	free(path);
+	exit(EXIT_FAILURE);
+}
+static void wait_for_child(pid_t last_pid, t_shell *shell)
+{
+	int status;
 
-	if (execve(path, cmd->args, shell) == -1)
-	{
-		perror("minishell");
-		free(path);
-		exit(EXIT_FAILURE);
-	}
+	waitpid(last_pid, &status, 0);
+	while (wait(NULL) > 0)
+		;
+	if (WIFEXITED(status))
+		shell->last_exit_code = WEXITSTATUS(status);
 }
 
 void execute_pipeline(t_command *pipeline, t_shell *shell)
 {
-	pid_t 	pid;
-	int		status;
+	int		pipe_fd[2];
+	int		in_fd;
+	int		out_fd;
+	pid_t	pid;
 
+	if (pipeline->next == NULL && is_builtin(pipeline->args[0]))
+	{
+		shell->last_exit_code = execute_builtin(pipeline, shell);
+		return ;
+	}
 	if (!pipeline || !pipeline->args || ! !pipeline->args[0])
 		return ;
-	if (is_builtin(pipeline->args[0]))
-		shell->last_exit_code = execute_builtin(pipeline, shell);
-	else
+
+	in_fd = STDIN_FILENO;
+	while(pipeline)
 	{
+		if (pipeline->next)
+			pipe(pipe_fd);
+
 		pid = fork();
-		if (pid == -1)
-			perror("fork");
-		else if (pid == 0)
-			execute_simple_command(pipeline, shell);
-		else
+		if (pid == 0)
 		{
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				g_last_exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-			{
-				
-			}
+			if (pipeline->next)
+				out_fd = pipe_fd[1];
+			else
+				out_fd = STDOUT_FILENO;
+			if (pipeline->next)
+				close(pipe_fd[0]);
+			execute_child_process(pipeline, shell, in_fd, out_fd);
 		}
+		if (in_fd != STDIN_FILENO)
+			close(in_fd);
+		if (pipeline->next)
+		{
+			close(pipe_fd[1]);
+			in_fd = pipe_fd[0];
+		}
+		pipeline = pipeline->next;
 	}
+	wait_for_child(pid, shell);
 }

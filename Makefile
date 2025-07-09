@@ -1,9 +1,9 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-READLINE_FLAGS = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
+CFLAGS = -Wall -Wextra -Werror -g -I/usr/local/opt/readline/include
+LDFLAGS = -lreadline -L/usr/local/opt/readline/lib
 
-SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c utils.c
+SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c builtins/pwd.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -14,7 +14,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(READLINE_FLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR) all

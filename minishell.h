@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/06/27 03:34:58 by beergin          ###   ########.fr       */
+/*   Updated: 2025/07/09 09:38:23 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 # include <unistd.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <fcntl.h>
 
 # define TOKEN_WORD 1
 # define TOKEN_PIPE 2
@@ -72,7 +72,6 @@ int					is_metachar(char c);
 t_token				*create_token(char *value, int type);
 void				add_token(t_token **head, t_token *new_token);
 void				free_tokens(t_token *head);
-char				*get_command_path(char *cmd, char **envp);
 void				execute_pipeline(t_command *pipeline, t_shell *shell);
 t_redirect				*create_redirection(int type, char **file);
 void					add_redirection(t_redirect **head,
@@ -80,7 +79,11 @@ void					add_redirection(t_redirect **head,
 void					free_redirections(t_redirect *head);
 void					free_commands(t_command *head);
 int						count_args(t_token *tokens);
-char	*get_command_path(char *cmd, char **envp);
+char			*get_command_path(char *cmd, t_shell *shell);
 t_command	*parser(t_token *tokens);
+int builtin_pwd(void);
+int is_builtin(char *cmd);
+int execute_builtin(t_command *cmd, t_shell *shell);
+
 
 #endif
