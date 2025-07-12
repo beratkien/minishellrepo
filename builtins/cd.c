@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 13:04:17 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/09 21:46:50 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/10 17:34:08 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static char	*get_env_value(t_shell *shell, const char *key)
 {
-    int	i;
+     int	i;
     int	key_len;
 
     if (!shell->envp || !key)
@@ -54,8 +54,6 @@ static int	update_env_var(t_shell *shell, const char *key, const char *value)
             free(temp);
             if (!new_var)
                 return (1);
-            
-            // Artık güvenle free edebiliriz çünkü kendi malloc'umuz
             free(shell->envp[i]);
             shell->envp[i] = new_var;
             return (0);

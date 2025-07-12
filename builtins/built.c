@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:55:09 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/09 13:34:49 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/11 23:16:44 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int is_builtin(char *cmd)
 	if (ft_strncmp(cmd, "env", 4) == 0)
 		return (1);
 	if (ft_strncmp(cmd, "cd", 3) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "exit", 5) == 0)
 		return (1);
 	return (0);
 }
@@ -37,5 +39,7 @@ int execute_builtin(t_command *cmd, t_shell *shell)
 		return (builtin_env(shell));
 	if (ft_strncmp(command_name, "cd", 3) == 0)
 		return (builtin_cd(cmd, shell));
+	if (ft_strncmp(command_name, "exit", 5) == 0)
+		return (builtin_exit(cmd, shell));
 	return (0);
 }

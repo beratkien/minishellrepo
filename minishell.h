@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/09 21:37:21 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/12 19:16:33 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,10 @@ typedef struct s_command
 //yeni shellin genel durumunu tutan ana yapı!!!!.
 typedef struct s_shell
 {
-	char	**envp;
-	int		last_exit_code;
+	char		**envp;
+	int			last_exit_code;
+	t_command	*command;
+	t_token		*token;
 }	t_shell;
 
 extern int g_last_exit_status;
@@ -72,6 +74,7 @@ int					is_metachar(char c);
 t_token				*create_token(char *value, int type);
 void				add_token(t_token **head, t_token *new_token);
 void				free_tokens(t_token *head);
+void free_envp(char **envp);
 void				execute_pipeline(t_command *pipeline, t_shell *shell);
 t_redirect				*create_redirection(int type, char **file);
 void					add_redirection(t_redirect **head,
@@ -87,5 +90,6 @@ int	builtin_env(t_shell *shell);
 int builtin_cd(t_command *cmd, t_shell *shell);
 int execute_builtin(t_command *cmd, t_shell *shell);
 int					handle_redirections(t_command *cmd);
+int builtin_exit(t_command *cmd, t_shell *shell);
 
 #endif

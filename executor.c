@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/07/09 13:34:13 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/12 20:17:31 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,18 @@ static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int
 	{
 		ft_putstr_fd("minishell command not found: ", 2);
 		ft_putendl_fd(cmd->args[0], 2);
+		free_tokens(shell->token);
+		free(path);
+		free_envp(shell->envp);
+		free_commands(cmd);
 		exit(127);
 	}
 	execve(path, cmd->args, shell->envp);
 	perror("minishell: execve");
+	free_tokens(shell->token);
 	free(path);
+	free_envp(shell->envp);
+	free_commands(cmd);
 	exit(EXIT_FAILURE);
 }
 static void wait_for_child(pid_t last_pid, t_shell *shell)

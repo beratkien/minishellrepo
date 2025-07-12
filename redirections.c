@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 11:32:44 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/09 11:46:03 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/11 23:37:54 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int handle_redirections(t_command *cmd)
 		if (redir->type == REDIR_OUT)
 			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (redir->type == REDIR_APPEND)
-			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (redir->type == REDIR_IN)
 			fd = open(redir->filename, O_RDONLY);
 		else

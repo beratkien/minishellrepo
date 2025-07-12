@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:04 by beergin           #+#    #+#             */
-/*   Updated: 2025/06/27 02:03:24 by beergin          ###   ########.fr       */
+/*   Updated: 2025/07/12 20:20:10 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ void	free_tokens(t_token *head)
 			free(tmp->value);
 		free(tmp);
 	}
+	head = NULL;
 }

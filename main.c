@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/09 21:51:39 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/12 21:43:23 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,111 +26,7 @@ void	handle_signal(int signo)
 	}
 }
 
-t_token	*lexer(char *line)
-{
-	t_token	*tokens;
-	int		i;
-	int		start;
 
-	i = 0;
-	tokens = NULL;
-	if (!line)
-		return (NULL);
-	while (line[i])
-	{
-		while (line[i] && is_whitespace(line[i]))
-			i++;
-		if (!line[i])
-			break ;
-		if (line[i] == '|')
-		{
-			add_token(&tokens, create_token(ft_strdup("|"), TOKEN_PIPE));
-			i++;
-		}
-		else if (line[i] == '<')
-		{
-			if (line[i + 1] == '<')
-			{
-				add_token(&tokens, create_token(ft_strdup("<<"),
-						TOKEN_HERE_DOC));
-				i += 2;
-			}
-			else
-			{
-				add_token(&tokens, create_token(ft_strdup("<"),
-						TOKEN_REDIRECT_IN));
-				i++;
-			}
-		}
-		else if (line[i] == '>')
-		{
-			if (line[i + 1] == '>')
-			{
-				add_token(&tokens, create_token(ft_strdup(">>"),
-						TOKEN_REDIRECT_APPEND));
-				i += 2;
-			}
-			else
-			{
-				add_token(&tokens, create_token(ft_strdup(">>"),
-						TOKEN_REDIRECT_OUT));
-				i++;
-			}
-		}
-		else
-		{
-			start = i;
-			if (line[i] == '\'')
-			{
-				i++;
-				start = i;
-				while (line[i] && line[i] != '\'')
-					i++;
-				if (line[i] == '\'')
-				{
-					add_token(&tokens, create_token(ft_substr(line, start, i
-								- start), TOKEN_WORD));
-					i++;
-				}
-				else
-				{
-					printf("minishell: unclosed quote\n");
-					free_tokens(tokens);
-					return (NULL);
-				}
-			}
-			else if (line[i] == '"')
-			{
-				i++;
-				start = i;
-				while (line[i] && line[i] != '"')
-					i++;
-				if (line[i] == '"')
-				{
-					add_token(&tokens, create_token(ft_substr(line, start, i
-								- start), TOKEN_WORD));
-					i++;
-				}
-				else
-				{
-					printf("minishell: unclosed quote\n");
-					free_tokens(tokens);
-					return (NULL);
-				}
-			}
-			else
-			{
-				while (line[i] && !is_whitespace(line[i])
-					&& !is_metachar(line[i]) && line[i] != '\''
-					&& line[i] != '"')
-					i++;
-				add_token(&tokens, create_token(ft_substr(line, start, i
-							- start), TOKEN_WORD));
-			}
-		}
-	}
-	return (tokens);
-}
 
 static char **copy_envp(char **envp)
 {
@@ -164,7 +60,7 @@ static char **copy_envp(char **envp)
     return (new_envp);
 }
 
-static void free_envp(char **envp)
+void free_envp(char **envp)
 {
     int i = 0;
 
@@ -182,7 +78,6 @@ static void free_envp(char **envp)
 int	main(int ac, char **av, char **envp)
 {
     char		*line;
-    t_token		*tokens;
     t_shell		shell;
 
     (void)ac;
@@ -195,6 +90,9 @@ int	main(int ac, char **av, char **envp)
         return (1);
     }
     shell.last_exit_code = 0;
+	shell.command = NULL;
+	shell.token = NULL;
+
 
     signal(SIGINT, handle_signal);
     signal(SIGQUIT, SIG_IGN);
@@ -210,22 +108,24 @@ int	main(int ac, char **av, char **envp)
         if (line[0] != '\0')
         {
             add_history(line);
-            tokens = lexer(line);
-            if (tokens)
+            shell.token = lexer(line);
+            if (shell.token)
             {
-                t_command *commands = parser(tokens);
-
-                if (commands)
+                shell.command = parser(shell.token);
+                if (shell.command)
                 {
-                    execute_pipeline(commands, &shell);
-                    free_commands(commands);
+                    execute_pipeline(shell.command, &shell);
+                    free_commands(shell.command);
                 }
-                free_tokens(tokens);
+                free_tokens(shell.token);
             }
         }
         free(line);
     }
-
-    free_envp(shell.envp);  // Program sonunda free et
+	if (shell.token)
+		free_tokens(shell.token);
+	if (shell.command)
+		free_commands(shell.command);
+    free_envp(shell.envp);
     return (shell.last_exit_code);
 }

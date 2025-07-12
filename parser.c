@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 02:03:45 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/01 14:16:25 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/12 21:40:03 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,39 +72,40 @@ t_command	*parser(t_token *tokens)
 				|| token_iter->type == TOKEN_REDIRECT_OUT
 				|| token_iter->type == TOKEN_HERE_DOC
 				|| token_iter->type == TOKEN_REDIRECT_APPEND)
-			{
-                redirect_type = token_iter->type;
-                token_iter = token_iter->next;
-                if(!token_iter || token_iter->type != TOKEN_WORD)
-                {
-                    if(token_iter)
+				{
+					redirect_type = token_iter->type;
+					token_iter = token_iter->next;
+					if(!token_iter || token_iter->type != TOKEN_WORD)
+					{
+						if(token_iter)
 						printf("minishell: syntax error near unexpected token  %s\n", token_iter->value);
-					else
+						else
 						printf("minishell: syntax error near unexpected token  %s\n", "newline");
-                    free(new_cmd->args);
-                    free(new_cmd);
-                    return (NULL);
-                }
-                new_red = create_redirection(redirect_type, &token_iter->value);
-                if(!new_red)
-                {
-                    free_commands(cmd_head);
-                    free(new_cmd->args);
-                    free(new_cmd);
-                    return (NULL);
-                }
-                add_redirection(&(new_cmd->redirects), new_red);
+						free(new_cmd->args);
+						free(new_cmd);
+						return (NULL);
+					}
+					new_red = create_redirection(redirect_type, &token_iter->value);
+					if(!new_red)
+					{
+						free_commands(cmd_head);
+						free(new_cmd->args);
+						free(new_cmd);
+						return (NULL);
+					}
+					add_redirection(&(new_cmd->redirects), new_red);
+				}
+				token_iter = token_iter->next;
 			}
-            token_iter = token_iter->next;
-		}
-        new_cmd->args[i] = NULL;
-        if(!cmd_head)
-            cmd_head = new_cmd;
+			new_cmd->args[i] = NULL;
+		if(!cmd_head)
+			cmd_head = new_cmd;
         else
-            current_cmd->next = new_cmd;
+			current_cmd->next = new_cmd;
         current_cmd = new_cmd;
         if(token_iter && token_iter->type == TOKEN_PIPE)
         {
+			printf("a\n\n");
             token_iter = token_iter->next;
             if(!token_iter && cmd_head)
             {

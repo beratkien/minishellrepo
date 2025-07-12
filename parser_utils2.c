@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:43:57 by md                #+#    #+#             */
-/*   Updated: 2025/06/27 02:55:10 by beergin          ###   ########.fr       */
+/*   Updated: 2025/07/12 20:19:30 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,10 @@ void	free_commands(t_command *head)
 			free(cmd_tmp->args);
 		}
 		if (cmd_tmp->redirects)
-			free(cmd_tmp->redirects);
+			free_redirections(cmd_tmp->redirects);
 		free(cmd_tmp);
 	}
+	head = NULL;
 }
 
 int	count_args(t_token *tokens)
