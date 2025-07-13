@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/12 19:16:33 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:50:22 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,7 @@ int builtin_cd(t_command *cmd, t_shell *shell);
 int execute_builtin(t_command *cmd, t_shell *shell);
 int					handle_redirections(t_command *cmd);
 int builtin_exit(t_command *cmd, t_shell *shell);
+char **copy_envp(char **envp);
+
 
 #endif

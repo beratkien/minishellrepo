@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 02:03:45 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/12 21:40:03 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:00:53 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ t_command	*parser(t_token *tokens)
         current_cmd = new_cmd;
         if(token_iter && token_iter->type == TOKEN_PIPE)
         {
-			printf("a\n\n");
             token_iter = token_iter->next;
             if(!token_iter && cmd_head)
             {

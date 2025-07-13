@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 13:04:17 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/10 17:34:08 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:20:04 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,16 @@ int builtin_cd(t_command *cmd, t_shell *shell)
             return (1);
         }
     }
+    // else if (ft_strncmp(cmd->args[1], "~", 2) == 0)
+    // {
+    //     path = get_env_value(shell, "HOME");
+    //      if (!path)
+    //     {
+    //         ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+    //         free(old_pwd);
+    //         return (1);
+    //     }
+    // }
     else if (ft_strncmp(cmd->args[1], "-", 2) == 0)
     {
         path = get_env_value(shell, "OLDPWD");
