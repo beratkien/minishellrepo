@@ -6,7 +6,7 @@
 /*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 21:16:16 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/31 21:45:43 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/01 02:21:03 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,11 @@ void	expand_variables(t_token *tokens, t_shell *shell)
 	{
 		if (tmp->type == TOKEN_WORD && ft_strchr(tmp->value, '$'))
 		{
+			if (tmp->quote_type == 1)
+			{
+				tmp = tmp->next;
+				continue;
+			}
 			expanded = expand_string(tmp->value, shell->envp);
 			if (!expanded)
 			{

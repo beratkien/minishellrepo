@@ -6,7 +6,7 @@
 /*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:04 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/31 21:39:47 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/01 02:08:25 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	is_metachar(char c)
 	return (0);
 }
 
-t_token	*create_token(char *value, int type)
+t_token	*create_token(char *value, int type, int quote_type)
 {
 	t_token	*new_token;
 
@@ -39,6 +39,7 @@ t_token	*create_token(char *value, int type)
 	}
 	new_token->value = value;
 	new_token->type = type;
+	new_token->quote_type = quote_type;
 	new_token->next = NULL;
 	return (new_token);
 }
@@ -66,8 +67,10 @@ void	free_tokens(t_token *head)
 		tmp = head;
 		head = head->next;
 		if (tmp->value)
+		{
 			free(tmp->value);
+			tmp->value = NULL;
+		}
 		free(tmp);
 	}
-	head = NULL;
 }

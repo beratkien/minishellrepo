@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/01 00:32:18 by md               ###   ########.fr       */
+/*   Updated: 2025/08/01 02:21:08 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_token
 {
 	char			*value;
 	int				type;
+	int				quote_type; // 0: none, 1: single, 2: double
 	struct s_token	*next;
 }					t_token;
 
@@ -68,7 +69,7 @@ extern int g_last_exit_status;
 t_token				*lexer(char *line);
 int					is_whitespace(char c);
 int					is_metachar(char c);
-t_token				*create_token(char *value, int type);
+t_token				*create_token(char *value, int type, int quote_type);
 void				add_token(t_token **head, t_token *new_token);
 void				free_tokens(t_token *head);
 void free_envp(char **envp);

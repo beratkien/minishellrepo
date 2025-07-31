@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 21:43:44 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/12 21:44:51 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/01 00:43:28 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,19 @@ t_token	*lexer(char *line)
 			break ;
 		if (line[i] == '|')
 		{
-			add_token(&tokens, create_token(ft_strdup("|"), TOKEN_PIPE));
+			add_token(&tokens, create_token(ft_strdup("|"), TOKEN_PIPE, 0));
 			i++;
 		}
 		else if (line[i] == '<')
 		{
 			if (line[i + 1] == '<')
 			{
-				add_token(&tokens, create_token(ft_strdup("<<"),
-						TOKEN_HERE_DOC));
+				add_token(&tokens, create_token(ft_strdup("<<"), TOKEN_HERE_DOC, 0));
 				i += 2;
 			}
 			else
 			{
-				add_token(&tokens, create_token(ft_strdup("<"),
-						TOKEN_REDIRECT_IN));
+				add_token(&tokens, create_token(ft_strdup("<"), TOKEN_REDIRECT_IN, 0));
 				i++;
 			}
 		}
@@ -52,14 +50,12 @@ t_token	*lexer(char *line)
 		{
 			if (line[i + 1] == '>')
 			{
-				add_token(&tokens, create_token(ft_strdup(">>"),
-						TOKEN_REDIRECT_APPEND));
+				add_token(&tokens, create_token(ft_strdup(">>"), TOKEN_REDIRECT_APPEND, 0));
 				i += 2;
 			}
 			else
 			{
-				add_token(&tokens, create_token(ft_strdup(">"),
-						TOKEN_REDIRECT_OUT));
+				add_token(&tokens, create_token(ft_strdup(">"), TOKEN_REDIRECT_OUT, 0));
 				i++;
 			}
 		}
@@ -74,8 +70,7 @@ t_token	*lexer(char *line)
 					i++;
 				if (line[i] == '\'')
 				{
-					add_token(&tokens, create_token(ft_substr(line, start, i
-								- start), TOKEN_WORD));
+					add_token(&tokens, create_token(ft_substr(line, start, i - start), TOKEN_WORD, 1));
 					i++;
 				}
 				else
@@ -93,8 +88,7 @@ t_token	*lexer(char *line)
 					i++;
 				if (line[i] == '"')
 				{
-					add_token(&tokens, create_token(ft_substr(line, start, i
-								- start), TOKEN_WORD));
+					add_token(&tokens, create_token(ft_substr(line, start, i - start), TOKEN_WORD, 2));
 					i++;
 				}
 				else
@@ -106,12 +100,9 @@ t_token	*lexer(char *line)
 			}
 			else
 			{
-				while (line[i] && !is_whitespace(line[i])
-					&& !is_metachar(line[i]) && line[i] != '\''
-					&& line[i] != '"')
+				while (line[i] && !is_whitespace(line[i]) && !is_metachar(line[i]) && line[i] != '\'' && line[i] != '"')
 					i++;
-				add_token(&tokens, create_token(ft_substr(line, start, i
-							- start), TOKEN_WORD));
+				add_token(&tokens, create_token(ft_substr(line, start, i - start), TOKEN_WORD, 0));
 			}
 		}
 	}
