@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:43:57 by md                #+#    #+#             */
-/*   Updated: 2025/07/12 20:19:30 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/01 00:25:34 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,18 @@ t_redirect	*create_redirection(int type, char **file)
 		perror("malloc failed for redirection");
 		return (NULL);
 	}
-	new_red->type = type;
+	// Token tipini redirect tipine çevir
+	if (type == TOKEN_REDIRECT_IN)
+		new_red->type = REDIR_IN;
+	else if (type == TOKEN_REDIRECT_OUT)
+		new_red->type = REDIR_OUT;
+	else if (type == TOKEN_REDIRECT_APPEND)
+		new_red->type = REDIR_APPEND;
+	else if (type == TOKEN_HERE_DOC)
+		new_red->type = REDIR_HEREDOC;
+	else
+		new_red->type = REDIR_IN; // varsayılan
+
 	new_red->filename = ft_strdup(*file);
 	if (!new_red->filename)
 	{

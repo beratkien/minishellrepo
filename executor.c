@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/07/12 20:17:31 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/01 00:29:50 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int
 {
 	char	*path;
 
+	// Önce pipe file descriptorları set et
 	if (in_fd != STDIN_FILENO)
 	{
 		dup2(in_fd, STDIN_FILENO);
@@ -83,6 +84,7 @@ static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int
 		dup2(out_fd, STDOUT_FILENO);
 		close(out_fd);
 	}
+	// Sonra redirection'ları handle et (bunlar pipe'ları override edebilir)
 	if (handle_redirections(cmd) == -1)
 		exit(EXIT_FAILURE);
 	if (is_builtin(cmd->args[0]))
@@ -90,7 +92,7 @@ static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int
 	path = get_command_path(cmd->args[0], shell);
 	if (!path)
 	{
-		ft_putstr_fd("minishell command not found: ", 2);
+		ft_putstr_fd("minishell: command not found: ", 2);
 		ft_putendl_fd(cmd->args[0], 2);
 		free_tokens(shell->token);
 		free(path);
@@ -126,7 +128,22 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 
 	if (pipeline->next == NULL && is_builtin(pipeline->args[0]))
 	{
-		shell->last_exit_code = execute_builtin(pipeline, shell);
+		// Builtin komut için de redirection'ları handle et
+		if (pipeline->redirects)
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				if (handle_redirections(pipeline) == -1)
+					exit(EXIT_FAILURE);
+				exit(execute_builtin(pipeline, shell));
+			}
+			wait_for_child(pid, shell);
+		}
+		else
+		{
+			shell->last_exit_code = execute_builtin(pipeline, shell);
+		}
 		return ;
 	}
 	if (!pipeline || !pipeline->args || !pipeline->args[0])

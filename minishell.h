@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/31 21:30:35 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/01 00:32:18 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@
 # define TOKEN_REDIRECT_APPEND 5
 # define TOKEN_HERE_DOC 6
 
+# define REDIR_IN 0
+# define REDIR_OUT 1
+# define REDIR_APPEND 2
+# define REDIR_HEREDOC 3
+
 typedef struct s_token
 {
 	char			*value;
@@ -37,18 +42,10 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
-typedef enum e_redir_type
-{
-	REDIR_IN,		// <
-	REDIR_OUT,		// >
-	REDIR_APPEND,	// >>
-	REDIR_HEREDOC	// <<
-}	t_redir_type;
-
 typedef struct s_redirect
 {
 	char				*filename;
-	t_redir_type		type;
+	int				type;
 	struct s_redirect	*next;
 }	t_redirect;
 

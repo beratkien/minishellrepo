@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 11:32:44 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/11 23:37:54 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/01 00:25:33 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@ int handle_redirections(t_command *cmd)
 			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (redir->type == REDIR_IN)
 			fd = open(redir->filename, O_RDONLY);
+		else if (redir->type == REDIR_HEREDOC)
+		{
+			// Heredoc için şimdilik basit implementasyon
+			// TODO: Gerçek heredoc implementasyonu eklenecek
+			redir = redir->next;
+			continue;
+		}
 		else
 		{
 			redir = redir->next;
