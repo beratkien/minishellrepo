@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:04 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/12 20:20:10 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/31 21:39:47 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	is_whitespace(char c)
 
 int	is_metachar(char c)
 {
-	if (c == '|' || c == '<' || c == '>' || c == '$')
+	if (c == '|' || c == '<' || c == '>')
 		return (1);
 	return (0);
 }

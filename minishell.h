@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/29 20:23:15 by md               ###   ########.fr       */
+/*   Updated: 2025/07/31 21:30:35 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,6 @@ int builtin_echo(t_command *cmd);
 int builtin_unset(t_command *cmd, t_shell *shell);
 int builtin_export(t_command *cmd, t_shell *shell);
 char **copy_envp(char **envp);
-
+void	expand_variables(t_token *tokens, t_shell *shell);
 
 #endif

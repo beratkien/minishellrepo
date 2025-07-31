@@ -5,7 +5,8 @@ LDFLAGS = -lreadline -L/usr/local/opt/readline/lib
 
 SRCS = main.c parser_utils.c parser_utils2.c parser.c executor.c builtins/pwd.c \
 		redirections.c builtins/built.c builtins/cd.c builtins/env.c builtins/exit.c \
-		lexer.c builtins/env_utils.c builtins/echo.c builtins/export.c builtins/unset.c
+		lexer.c builtins/env_utils.c builtins/echo.c builtins/export.c builtins/unset.c \
+		expand.c
 
 OBJS = $(SRCS:.c=.o)
 
