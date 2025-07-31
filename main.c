@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/07/13 23:28:15 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/07/28 17:18:37 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	main(int ac, char **av, char **envp)
             free_tokens(shell.token);
         if (shell.command)
             free_commands(shell.command);
-        free_envp(shell.envp);
-    }
+        }
+    free_envp(shell.envp);
     return (shell.last_exit_code);
 }
