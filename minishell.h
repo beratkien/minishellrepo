@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/01 02:21:08 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/02 20:06:36 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ typedef struct s_command
 {
 	char				**args;
 	t_redirect			*redirects;
+	char 				*heredoc_delimiter;
+	char 				*heredoc_file;
 	struct s_command	*next;
 }	t_command;
 //yeni shellin genel durumunu tutan ana yapı!!!!.
@@ -94,5 +96,6 @@ int builtin_unset(t_command *cmd, t_shell *shell);
 int builtin_export(t_command *cmd, t_shell *shell);
 char **copy_envp(char **envp);
 void	expand_variables(t_token *tokens, t_shell *shell);
+void parse_heredoc(t_command *cmd, t_token *token);
 
 #endif

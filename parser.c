@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 02:03:45 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/01 02:21:23 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/02 19:58:08 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ t_command	*parser(t_token *tokens)
 				token_iter = token_iter->next;
 			}
 			new_cmd->args[i] = NULL;
+			parse_heredoc(new_cmd, cmd_start_token);
 		if(!cmd_head)
 			cmd_head = new_cmd;
         else
