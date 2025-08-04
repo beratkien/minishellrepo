@@ -6,7 +6,7 @@
 /*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 11:32:44 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/01 00:25:33 by md               ###   ########.fr       */
+/*   Updated: 2025/08/03 00:43:15 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,7 @@ int handle_redirections(t_command *cmd)
 		else if (redir->type == REDIR_IN)
 			fd = open(redir->filename, O_RDONLY);
 		else if (redir->type == REDIR_HEREDOC)
-		{
-			// Heredoc için şimdilik basit implementasyon
-			// TODO: Gerçek heredoc implementasyonu eklenecek
-			redir = redir->next;
-			continue;
-		}
+			fd = open(redir->filename, O_RDONLY);
 		else
 		{
 			redir = redir->next;
@@ -42,10 +37,11 @@ int handle_redirections(t_command *cmd)
 		}
 		if (fd == -1)
 		{
-			perror("minishell");
+			ft_putstr_fd("minishell: ", 2);
+			perror(redir->filename);
 			return (-1);
 		}
-		if (redir->type == REDIR_IN)
+		if (redir->type == REDIR_IN || redir->type == REDIR_HEREDOC)
 			dup2(fd, STDIN_FILENO);
 		else
 			dup2(fd, STDOUT_FILENO);
@@ -53,4 +49,23 @@ int handle_redirections(t_command *cmd)
 		redir = redir->next;
 	}
 	return (0);
+}
+//geçici dosyası silme fonksiyonu
+void	cleanup_heredoc(t_command *pipeline)
+{
+	t_command	*current_cmd;
+	t_redirect	*redir;
+
+	current_cmd = pipeline;
+	while (current_cmd)
+	{
+		redir = current_cmd->redirects;
+		while(redir)
+		{
+			if(redir->type == REDIR_HEREDOC && redir->filename)
+				unlink(redir->filename);
+			redir = redir->next;
+		}
+		current_cmd = current_cmd->next;
+	}
 }

@@ -6,13 +6,12 @@
 /*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/08/01 00:29:50 by md               ###   ########.fr       */
+/*   Updated: 2025/08/03 08:17:45 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int g_last_exit_status = 0;
 static void free_path(char **path)
 {
 	int	i;
@@ -108,23 +107,30 @@ static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int
 	free_commands(cmd);
 	exit(EXIT_FAILURE);
 }
-static void wait_for_child(pid_t last_pid, t_shell *shell)
+static void wait_for_children(pid_t last_pid, t_shell *shell)
 {
 	int status;
+	int	exit_code;
 
 	waitpid(last_pid, &status, 0);
+	if (WIFEXITED(status))
+		exit_code = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		exit_code = 128 + WTERMSIG(status);
+	else
+		exit_code = status;
 	while (wait(NULL) > 0)
 		;
-	if (WIFEXITED(status))
-		shell->last_exit_code = WEXITSTATUS(status);
+	shell->last_exit_code = exit_code;
 }
 
 void execute_pipeline(t_command *pipeline, t_shell *shell)
 {
-	int		pipe_fd[2];
-	int		in_fd;
-	int		out_fd;
-	pid_t	pid;
+	int			pipe_fd[2];
+	int			in_fd;
+	int			out_fd;
+	pid_t		pid;
+	t_command	*cmd_list_head;
 
 	if (pipeline->next == NULL && is_builtin(pipeline->args[0]))
 	{
@@ -138,7 +144,7 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 					exit(EXIT_FAILURE);
 				exit(execute_builtin(pipeline, shell));
 			}
-			wait_for_child(pid, shell);
+			wait_for_children(pid, shell);
 		}
 		else
 		{
@@ -149,6 +155,7 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 	if (!pipeline || !pipeline->args || !pipeline->args[0])
 		return ;
 
+	cmd_list_head = pipeline;
 	in_fd = STDIN_FILENO;
 	while(pipeline)
 	{
@@ -175,5 +182,6 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 		}
 		pipeline = pipeline->next;
 	}
-	wait_for_child(pid, shell);
+	wait_for_children(pid, shell);
+	cleanup_heredoc(cmd_list_head);
 }

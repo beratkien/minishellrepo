@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
+/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/02 20:06:36 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/03 08:16:11 by md               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ typedef struct s_shell
 	t_token		*token;
 }	t_shell;
 
-extern int g_last_exit_status;
 t_token				*lexer(char *line);
 int					is_whitespace(char c);
 int					is_metachar(char c);
@@ -97,5 +96,6 @@ int builtin_export(t_command *cmd, t_shell *shell);
 char **copy_envp(char **envp);
 void	expand_variables(t_token *tokens, t_shell *shell);
 void parse_heredoc(t_command *cmd, t_token *token);
+void	cleanup_heredoc(t_command *pipeline);
 
 #endif
