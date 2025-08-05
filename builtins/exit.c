@@ -6,7 +6,7 @@
 /*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 17:50:37 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/07/13 23:51:29 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/05 02:21:45 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,31 @@ int builtin_exit(t_command *cmd, t_shell *shell)
 {
 	int exit_code;
 
-	ft_putendl_fd("exit", 2);
-	if (shell->envp)
-		free_envp(shell->envp);
+	// Interactive mode'da "exit" yazdır
+	if (isatty(STDIN_FILENO))
+		ft_putendl_fd("exit", 2);
+
 	if (!cmd->args[1])
 	{
-		free_commands(shell->command);
-		free_tokens(shell->token);
-		exit(shell->last_exit_code);
+		exit_code = shell->last_exit_code;
 	}
-	if (!is_numeric(cmd->args[1]))
+	else if (!is_numeric(cmd->args[1]))
 	{
-		ft_putstr_fd("exit", 2);
+		ft_putstr_fd("minishell: exit: ", 2);
 		ft_putstr_fd(cmd->args[1], 2);
 		ft_putendl_fd(": numeric argument required", 2);
-		free_commands(shell->command);
-		free_tokens(shell->token);
-		exit(255);
+		exit_code = 255;
 	}
-	if (cmd->args[2])
+	else if (cmd->args[2])
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		return (1);
 	}
-	free_commands(shell->command);
-	free_tokens(shell->token);
-	exit_code = ft_atoi(cmd->args[1]);
+	else
+	{
+		exit_code = ft_atoi(cmd->args[1]);
+	}
+
+	// Pipeline context'inde direkt exit, aksi halde main'e dön
 	exit(exit_code % 256);
 }

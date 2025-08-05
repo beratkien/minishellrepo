@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 11:32:44 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/03 00:43:15 by md               ###   ########.fr       */
+/*   Updated: 2025/08/05 01:24:12 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,18 @@ void	cleanup_heredoc(t_command *pipeline)
 	current_cmd = pipeline;
 	while (current_cmd)
 	{
-		redir = current_cmd->redirects;
-		while(redir)
+		// Hem redirections hem de heredoc_file'ı temizle
+		if (current_cmd->heredoc_file)
 		{
-			if(redir->type == REDIR_HEREDOC && redir->filename)
+			unlink(current_cmd->heredoc_file);
+			free(current_cmd->heredoc_file);
+			current_cmd->heredoc_file = NULL;
+		}
+
+		redir = current_cmd->redirects;
+		while (redir)
+		{
+			if (redir->type == REDIR_HEREDOC && redir->filename)
 				unlink(redir->filename);
 			redir = redir->next;
 		}

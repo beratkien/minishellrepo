@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 21:16:16 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/03 08:19:13 by md               ###   ########.fr       */
+/*   Updated: 2025/08/05 01:24:50 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*get_env_value(char *var_name, t_shell *shell)
 	size_t	len;
 	char	*exit_code_str;
 
-	if (ft_strcmp(var_name, "?") == 0)
+	if (ft_strncmp(var_name, "?", 1) == 0 && ft_strlen(var_name) == 1)
 	{
 		exit_code_str = ft_itoa(shell->last_exit_code);
 		return (exit_code_str);

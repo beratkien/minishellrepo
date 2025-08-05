@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/03 08:16:11 by md               ###   ########.fr       */
+/*   Updated: 2025/08/05 13:07:24 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int builtin_export(t_command *cmd, t_shell *shell);
 char **copy_envp(char **envp);
 void	expand_variables(t_token *tokens, t_shell *shell);
 void parse_heredoc(t_command *cmd, t_token *token);
+int	handle_heredoc_execution(t_command *cmd);
 void	cleanup_heredoc(t_command *pipeline);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:43:57 by md                #+#    #+#             */
-/*   Updated: 2025/08/01 00:25:34 by md               ###   ########.fr       */
+/*   Updated: 2025/08/05 02:11:44 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,10 @@ void	free_commands(t_command *head)
 		}
 		if (cmd_tmp->redirects)
 			free_redirections(cmd_tmp->redirects);
+		if (cmd_tmp->heredoc_delimiter)
+			free(cmd_tmp->heredoc_delimiter);
+		if (cmd_tmp->heredoc_file)
+			free(cmd_tmp->heredoc_file);
 		free(cmd_tmp);
 	}
 	head = NULL;

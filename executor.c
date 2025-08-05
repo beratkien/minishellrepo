@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: md <md@student.42.fr>                      +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 13:42:55 by md                #+#    #+#             */
-/*   Updated: 2025/08/03 08:17:45 by md               ###   ########.fr       */
+/*   Updated: 2025/08/05 13:47:51 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,83 +68,32 @@ char	*get_command_path(char *cmd, t_shell *shell)
 	return (NULL);
 }
 
-static void execute_child_process(t_command *cmd, t_shell *shell, int in_fd, int out_fd)
-{
-	char	*path;
-
-	// Önce pipe file descriptorları set et
-	if (in_fd != STDIN_FILENO)
-	{
-		dup2(in_fd, STDIN_FILENO);
-		close(in_fd);
-	}
-	if (out_fd != STDOUT_FILENO)
-	{
-		dup2(out_fd, STDOUT_FILENO);
-		close(out_fd);
-	}
-	// Sonra redirection'ları handle et (bunlar pipe'ları override edebilir)
-	if (handle_redirections(cmd) == -1)
-		exit(EXIT_FAILURE);
-	if (is_builtin(cmd->args[0]))
-		exit(execute_builtin(cmd, shell));
-	path = get_command_path(cmd->args[0], shell);
-	if (!path)
-	{
-		ft_putstr_fd("minishell: command not found: ", 2);
-		ft_putendl_fd(cmd->args[0], 2);
-		free_tokens(shell->token);
-		free(path);
-		free_envp(shell->envp);
-		free_commands(cmd);
-		exit(127);
-	}
-	execve(path, cmd->args, shell->envp);
-	perror("minishell: execve");
-	free_tokens(shell->token);
-	free(path);
-	free_envp(shell->envp);
-	free_commands(cmd);
-	exit(EXIT_FAILURE);
-}
-static void wait_for_children(pid_t last_pid, t_shell *shell)
-{
-	int status;
-	int	exit_code;
-
-	waitpid(last_pid, &status, 0);
-	if (WIFEXITED(status))
-		exit_code = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		exit_code = 128 + WTERMSIG(status);
-	else
-		exit_code = status;
-	while (wait(NULL) > 0)
-		;
-	shell->last_exit_code = exit_code;
-}
-
 void execute_pipeline(t_command *pipeline, t_shell *shell)
 {
-	int			pipe_fd[2];
-	int			in_fd;
-	int			out_fd;
-	pid_t		pid;
-	t_command	*cmd_list_head;
+	int		pipe_fd[2];
+	int		in_fd;
+	pid_t	pid;
+	int		status;
 
 	if (pipeline->next == NULL && is_builtin(pipeline->args[0]))
 	{
-		// Builtin komut için de redirection'ları handle et
+		// Single builtin command
 		if (pipeline->redirects)
 		{
 			pid = fork();
 			if (pid == 0)
 			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				if (handle_redirections(pipeline) == -1)
 					exit(EXIT_FAILURE);
 				exit(execute_builtin(pipeline, shell));
 			}
-			wait_for_children(pid, shell);
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				shell->last_exit_code = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				shell->last_exit_code = 128 + WTERMSIG(status);
 		}
 		else
 		{
@@ -152,36 +101,97 @@ void execute_pipeline(t_command *pipeline, t_shell *shell)
 		}
 		return ;
 	}
+
 	if (!pipeline || !pipeline->args || !pipeline->args[0])
 		return ;
 
-	cmd_list_head = pipeline;
 	in_fd = STDIN_FILENO;
-	while(pipeline)
+
+	while (pipeline)
 	{
 		if (pipeline->next)
-			pipe(pipe_fd);
+		{
+			if (pipe(pipe_fd) == -1)
+			{
+				perror("pipe");
+				return;
+			}
+		}
 
 		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			return;
+		}
+
 		if (pid == 0)
 		{
+			// Child process - restore default signal handlers
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
+
+			if (in_fd != STDIN_FILENO)
+			{
+				dup2(in_fd, STDIN_FILENO);
+				close(in_fd);
+			}
+
 			if (pipeline->next)
-				out_fd = pipe_fd[1];
-			else
-				out_fd = STDOUT_FILENO;
-			if (pipeline->next)
+			{
 				close(pipe_fd[0]);
-			execute_child_process(pipeline, shell, in_fd, out_fd);
+				dup2(pipe_fd[1], STDOUT_FILENO);
+				close(pipe_fd[1]);
+			}
+
+			// Handle redirections
+			if (handle_redirections(pipeline) == -1)
+				exit(EXIT_FAILURE);
+
+			// Execute command
+			if (is_builtin(pipeline->args[0]))
+				exit(execute_builtin(pipeline, shell));
+			else
+			{
+				char *path = get_command_path(pipeline->args[0], shell);
+				if (!path)
+				{
+					ft_putstr_fd("minishell: command not found: ", 2);
+					ft_putendl_fd(pipeline->args[0], 2);
+					exit(127);
+				}
+				execve(path, pipeline->args, shell->envp);
+				perror("minishell: execve");
+				free(path);
+				exit(EXIT_FAILURE);
+			}
 		}
-		if (in_fd != STDIN_FILENO)
-			close(in_fd);
-		if (pipeline->next)
+		else
 		{
-			close(pipe_fd[1]);
-			in_fd = pipe_fd[0];
+			if (in_fd != STDIN_FILENO)
+				close(in_fd);
+
+			if (pipeline->next)
+			{
+				close(pipe_fd[1]);
+				in_fd = pipe_fd[0];
+			}
+			else
+			{
+				// Last command, wait for it
+				waitpid(pid, &status, 0);
+				if (WIFEXITED(status))
+					shell->last_exit_code = WEXITSTATUS(status);
+				else if (WIFSIGNALED(status))
+					shell->last_exit_code = 128 + WTERMSIG(status);
+			}
 		}
 		pipeline = pipeline->next;
 	}
-	wait_for_children(pid, shell);
-	cleanup_heredoc(cmd_list_head);
+
+	// Wait for remaining processes
+	while (wait(NULL) > 0)
+		;
+
+	// cleanup_heredoc(pipeline); // pipeline şu anda NULL olabilir, skip et
 }

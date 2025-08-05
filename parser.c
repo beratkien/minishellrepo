@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
+/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 02:03:45 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/02 19:58:08 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/05 13:47:50 by mdonmeze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ t_command	*parser(t_token *tokens)
 		}
 		new_cmd->redirects = NULL;
 		new_cmd->next = NULL;
+		new_cmd->heredoc_delimiter = NULL;
+		new_cmd->heredoc_file = NULL;
 		arg_count = 0;
 		tmp_iter = token_iter;
 		cmd_start_token = token_iter;
@@ -70,7 +72,6 @@ t_command	*parser(t_token *tokens)
 			}
 			else if (token_iter->type == TOKEN_REDIRECT_IN
 				|| token_iter->type == TOKEN_REDIRECT_OUT
-				|| token_iter->type == TOKEN_HERE_DOC
 				|| token_iter->type == TOKEN_REDIRECT_APPEND)
 				{
 					redirect_type = token_iter->type;
@@ -94,6 +95,21 @@ t_command	*parser(t_token *tokens)
 						return (NULL);
 					}
 					add_redirection(&(new_cmd->redirects), new_red);
+				}
+			else if (token_iter->type == TOKEN_HERE_DOC)
+			{
+				// Heredoc için sadece token'ı atla, parse_heredoc handle edecek
+				token_iter = token_iter->next;
+				if(!token_iter || token_iter->type != TOKEN_WORD)
+				{
+					if(token_iter)
+						printf("minishell: syntax error near unexpected token  %s\n", token_iter->value);
+					else
+						printf("minishell: syntax error near unexpected token  %s\n", "newline");
+					free(new_cmd->args);
+					free(new_cmd);
+					return (NULL);
+				}
 				}
 				token_iter = token_iter->next;
 			}
