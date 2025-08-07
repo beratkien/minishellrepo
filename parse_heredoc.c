@@ -6,7 +6,7 @@
 /*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 19:46:50 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/07 16:04:30 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:38:27 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,26 +87,6 @@ static char	*read_line(void)
 		close(fd);
 	}
 
-// Execution sırasında heredoc'u handle et
-int	handle_heredoc_execution(t_command *cmd, t_shell *shell, t_token *token)
-{
-	t_redirect	*heredoc_redir;
-
-	if (!cmd->heredoc_delimiter)
-		return (0);
-	read_heredoc(cmd->heredoc_delimiter, &cmd->heredoc_file, shell, token->quote_type);
-	if (!cmd->heredoc_file)
-		return (-1);
-	// Heredoc'u redirection listesine ekle
-	heredoc_redir = malloc(sizeof(t_redirect));
-	if (!heredoc_redir)
-		return (-1);
-	heredoc_redir->type = REDIR_HEREDOC;
-	heredoc_redir->filename = ft_strdup(cmd->heredoc_file);
-	heredoc_redir->next = NULL;
-	add_redirection(&cmd->redirects, heredoc_redir);
-	return (0);
-}
 void	parse_heredoc(t_command *cmd, t_token *token, t_shell *shell)
 {
 	t_token		*tmp;
