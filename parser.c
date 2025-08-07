@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 02:03:45 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/05 13:47:50 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/07 15:34:52 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_command	*parser(t_token *tokens)
+t_command	*parser(t_token *tokens, t_shell *shell)
 {
 	t_command *cmd_head;
 	t_command *current_cmd;
@@ -114,7 +114,7 @@ t_command	*parser(t_token *tokens)
 				token_iter = token_iter->next;
 			}
 			new_cmd->args[i] = NULL;
-			parse_heredoc(new_cmd, cmd_start_token);
+			parse_heredoc(new_cmd, cmd_start_token, shell);
 		if(!cmd_head)
 			cmd_head = new_cmd;
         else

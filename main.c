@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 00:29:53 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/05 13:47:56 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/07 15:35:19 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	main(int ac, char **av, char **envp)
 			if (shell.token)
 			{
 				expand_variables(shell.token, &shell);
-				shell.command = parser(shell.token);
+				shell.command = parser(shell.token, &shell);
 				if (shell.command)
 					execute_pipeline(shell.command, &shell);
 			}

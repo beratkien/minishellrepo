@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 01:56:45 by mdonmeze          #+#    #+#             */
-/*   Updated: 2025/08/05 13:07:24 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/07 16:05:53 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void					free_redirections(t_redirect *head);
 void					free_commands(t_command *head);
 int						count_args(t_token *tokens);
 char			*get_command_path(char *cmd, t_shell *shell);
-t_command	*parser(t_token *tokens);
+t_command	*parser(t_token *tokens, t_shell *shell);
 int builtin_pwd(void);
 int is_builtin(char *cmd);
 int	builtin_env(t_shell *shell);
@@ -95,8 +95,10 @@ int builtin_unset(t_command *cmd, t_shell *shell);
 int builtin_export(t_command *cmd, t_shell *shell);
 char **copy_envp(char **envp);
 void	expand_variables(t_token *tokens, t_shell *shell);
-void parse_heredoc(t_command *cmd, t_token *token);
-int	handle_heredoc_execution(t_command *cmd);
+void parse_heredoc(t_command *cmd, t_token *token, t_shell *shell);
+int	handle_heredoc_execution(t_command *cmd, t_shell *shell, t_token *token);
 void	cleanup_heredoc(t_command *pipeline);
-
+int is_expandable_delim(int quote_type);
+char	*expand_string(char *str, t_shell *shell);
+char *expand_variables2(char *line, t_shell *shell);
 #endif

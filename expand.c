@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdonmeze <mdonmeze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 21:16:16 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/05 01:24:50 by mdonmeze         ###   ########.fr       */
+/*   Updated: 2025/08/07 15:32:20 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char	*append_str(char *dest, const char *src)
 	return (new_str);
 }
 
-static char	*expand_string(char *str, t_shell *shell)
+char	*expand_string(char *str, t_shell *shell)
 {
 	int		i;
 	int		start;
