@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_heredoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: beergin <beergin@student.42.tr>            +#+  +:+       +#+        */
+/*   By: beergin <beergin@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 19:46:50 by beergin           #+#    #+#             */
-/*   Updated: 2025/08/07 16:38:27 by beergin          ###   ########.fr       */
+/*   Updated: 2025/08/08 01:13:05 by beergin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static char	*read_line(void)
 		int		expand;
 
 		expand = is_expandable_delim(quote_type);
-		printf("%d\n", expand);
 		*heredoc_file = create_temp_filename();
 		if (!*heredoc_file)
 			return ;
